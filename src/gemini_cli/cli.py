@@ -3,6 +3,11 @@ import os
 
 from gemini_cli import __version__
 from gemini_cli.api.gemini import Gemini
+from gemini_cli.utils.helpers import load_env, verify_env, write_dotenv
+from gemini_cli.utils.processor import process_gemini_response
+
+
+load_env()
 
 
 @click.group(invoke_without_command=True)
@@ -45,7 +50,10 @@ def configure(api_key):
             if click.confirm("Would you like to setup your API key now?", default=True, prompt_suffix=": "):
                 api_key = click.prompt("Enter your Gemini API key",
                                        prompt_suffix=": ", hide_input=True, confirmation_prompt=True)
-                os.environ["GOOGLE_API_KEY"] = api_key
+
+                env_map = {"GOOGLE_API_KEY": api_key}
+                write_dotenv(env_map)
+
                 click.echo(
                     click.style(
                         "\nAPI key has been set successfully.", fg="green")
@@ -54,6 +62,7 @@ def configure(api_key):
                 click.echo(
                     "\nInstallation complete. You can now use the gemini-cli commands."
                 )
+
             else:
                 click.echo(
                     click.style(
@@ -61,7 +70,8 @@ def configure(api_key):
                     )
                 )
         else:
-            os.environ["GOOGLE_API_KEY"] = api_key
+            env_map = {"GOOGLE_API_KEY": api_key}
+            write_dotenv(env_map)
             click.echo(
                 click.style("\nAPI key has been set successfully.", fg="green")
             )
@@ -76,29 +86,21 @@ def configure(api_key):
                 bold=True
             )
         )
+
     except Exception as e:
         click.echo(
             click.style(f"An error occurred: {str(e)}", fg="red")
         )
 
 
-@cli.command("prompt")
-@click.option("--text", "-t", help="Text prompt to interact with Gemini")
-@click.option("--image", "-i", multiple=True, help="Image path to upload to Gemini. Can upload multiple images")
-@click.option("--file", "-f", multiple=True, help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API")
-@click.pass_context
-def prompt(ctx, text, image, file):
-    """Generate content from a prompt and/or other files."""
-    if not (text or image or file):
+@cli.command('verify', help="Check if the API key is set.")
+def verify():
+    try:
+        verify_env(["GOOGLE_API_KEY"])
         click.echo(
             click.style(
-                "Please provide atleast one of the following options: --text, --image, --file.", fg="bright_red", )
+                "API key found. You are ready to use the API.", fg="green")
         )
-        click.echo(ctx.get_help())
-
-    try:
-        gemini = Gemini()
-
     except ValueError as e:
         click.echo(
             click.style(f"An error occurred: {str(e)}", fg="red")
