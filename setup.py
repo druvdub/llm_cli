@@ -23,7 +23,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'gcli=gemini_cli.cli:cli'
+            'gcli=gemini_cli.cli:cli',
+            'gemini-cli=gemini_cli.cli:cli'
         ]
     },
     author='ddos',
