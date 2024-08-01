@@ -126,17 +126,13 @@ def prompt(ctx, text, image, file, stream):
             gemini = Gemini()
 
             if text:
-                click.echo(
-                    click.style(
-                        "\nGenerating content from text prompt...", fg="green")
-                )
                 response = gemini.generate_content_from_text_prompt(text)
 
                 result = process_gemini_response(response)
 
                 click.echo(
                     click.style(
-
+                        f"\n{result}", fg="bright_blue"
                     )
                 )
 

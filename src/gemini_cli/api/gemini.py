@@ -20,7 +20,7 @@ class Gemini:
                 "API key not found. Please set the GOOGLE_API_KEY environment variable or properly configure it using `gcli configure`.")
 
         genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-pro')
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     def generate_content_from_text_prompt(self, prompt: str, stream_response: bool = False) -> GenerateContentResponse:
         """Generate content from a text prompt."""
