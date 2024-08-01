@@ -17,7 +17,7 @@ class Gemini:
 
         else:
             raise ValueError(
-                "API key not found. Please set the GOOGLE_API_KEY environment variable.")
+                "API key not found. Please set the GOOGLE_API_KEY environment variable or properly configure it using `gcli configure`.")
 
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel('gemini-1.5-pro')
