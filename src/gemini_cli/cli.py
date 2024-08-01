@@ -3,7 +3,7 @@ import os
 
 from gemini_cli import __version__
 from gemini_cli.api.gemini import Gemini
-from gemini_cli.utils.helpers import load_env, verify_env, write_dotenv
+from gemini_cli.utils.helpers import version_, load_env, verify_env, write_dotenv
 from gemini_cli.utils.processor import process_gemini_response
 
 
@@ -20,14 +20,9 @@ def cli(ctx, version):
     Examples: $ gcli --version
     """
     if version:
-        _version()
+        click.echo(version_())
     elif ctx.invoked_subcommand is None:
         click.echo("" + ctx.get_help())
-
-
-def _version():
-    """Get the version of the gemini-cli package."""
-    click.echo(f"gemini-cli v{__version__}")
 
 
 @cli.command("configure")
