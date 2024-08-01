@@ -19,7 +19,8 @@ setup(
     packages=find_packages("src"),
     install_requires=[
         'click>=8.1.0',
-        'google-generativeai>=0.7.2'
+        'google-generativeai>=0.7.2',
+        'python-dotenv>=1.0.1'
     ],
     entry_points={
         'console_scripts': [
