@@ -105,3 +105,42 @@ def verify():
         click.echo(
             click.style(f"An error occurred: {str(e)}", fg="red")
         )
+
+
+@cli.command("prompt")
+@click.option("--text", "-t", help="Text prompt to interact with Gemini")
+@click.option("--image", "-i", multiple=True, help="Image path to upload to Gemini. Can upload multiple images")
+@click.option("--file", "-f", multiple=True, help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API")
+@click.option("--stream", "-s", is_flag=True, default=False, help="Get the response in chunks.")
+@click.pass_context
+def prompt(ctx, text, image, file, stream):
+    """Generate content from a prompt and/or other files."""
+    if not (text or image or file):
+        click.echo(
+            click.style(
+                "Please provide atleast one of the following options: --text, --image, --file.", fg="bright_red", )
+        )
+        click.echo(ctx.get_help())
+    else:
+        try:
+            gemini = Gemini()
+
+            if text:
+                click.echo(
+                    click.style(
+                        "\nGenerating content from text prompt...", fg="green")
+                )
+                response = gemini.generate_content_from_text_prompt(text)
+
+                result = process_gemini_response(response)
+
+                click.echo(
+                    click.style(
+
+                    )
+                )
+
+        except ValueError as e:
+            click.echo(
+                click.style(f"An error occurred: {str(e)}", fg="red")
+            )
