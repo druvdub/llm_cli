@@ -2,6 +2,7 @@ import click
 import os
 
 from gemini_cli import __version__
+from gemini_cli.api.gemini import Gemini
 
 
 @click.group(invoke_without_command=True)
