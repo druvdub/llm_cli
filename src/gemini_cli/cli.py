@@ -80,3 +80,18 @@ def configure(api_key):
         click.echo(
             click.style(f"An error occurred: {str(e)}", fg="red")
         )
+
+
+@cli.command("prompt")
+@click.option("--text", "-t", help="Text prompt to interact with Gemini", required=False)
+@click.option("--image", "-i", help="Image path to upload to Gemini. Can upload multiple images", required=False)
+@click.option("--file", "-f", help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API", required=False)
+@click.pass_context
+def prompt(ctx, text, image, file):
+    """Generate content from a prompt and/or other files."""
+    if not (text or image or file):
+        click.echo(
+            click.style(
+                "Please provide atleast one of the following options: --text, --image, --file.", fg="bright_red", )
+        )
+        click.echo(ctx.get_help())
