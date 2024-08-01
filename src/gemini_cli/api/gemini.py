@@ -26,5 +26,14 @@ class Gemini:
         return self.model.generate_content(prompt, stream=stream_response)
 
     def generate_content_from_text_image_prompt(self, prompt: str, image_args: list[dict], stream_response: bool = False) -> GenerateContentResponse:
-        """Generate content from a text prompt and supplied image arguments."""
+        """
+            Generate content from a text prompt and supplied image arguments.
+
+            Supported image types are:
+            - image/png
+            - image/jpeg
+            - image/webp
+            - image/heif
+            - image/heic
+        """
         return self.model.generate_content([prompt, *image_args], stream=stream_response)
