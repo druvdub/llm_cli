@@ -1,5 +1,6 @@
 import os
 import google.generativeai as genai
+from google.generativeai.types import GenerateContentResponse
 from dataclasses import dataclass
 
 
@@ -19,3 +20,11 @@ class Gemini:
 
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel('gemini-1.5-pro')
+
+    def generate_content_from_text_prompt(self, prompt: str, stream_response: bool = False) -> GenerateContentResponse:
+        """Generate content from a text prompt."""
+        return self.model.generate_content(prompt, stream=stream_response)
+
+    def generate_content_from_text_image_prompt(self, prompt: str, image_args: list[dict], stream_response: bool = False) -> GenerateContentResponse:
+        """Generate content from a text prompt and supplied image arguments."""
+        return self.model.generate_content([prompt, *image_args], stream=stream_response)
