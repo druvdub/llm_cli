@@ -8,7 +8,11 @@ from gemini_cli import __version__
 @click.option("--version", "-v", is_flag=True, help="Get the version of the gemini-cli package.")
 @click.pass_context
 def cli(ctx, version):
-    """A CLI tool for interacting with the Gemini API."""
+    """A CLI tool for interacting with the Gemini API.
+    can be invoked with 'gcli' or 'gemini-cli'.
+
+    Examples: $ gcli --version
+    """
     if version:
         _version()
     elif ctx.invoked_subcommand is None:
@@ -40,7 +44,7 @@ def configure(api_key):
             if click.confirm("Would you like to setup your API key now?", default=True, prompt_suffix=": "):
                 api_key = click.prompt("Enter your Gemini API key",
                                        prompt_suffix=": ", hide_input=True, confirmation_prompt=True)
-                os.environ["GEMINI_API_KEY"] = api_key
+                os.environ["GOOGLE_API_KEY"] = api_key
                 click.echo(
                     click.style(
                         "\nAPI key has been set successfully.", fg="green")
@@ -52,11 +56,11 @@ def configure(api_key):
             else:
                 click.echo(
                     click.style(
-                        "API key not configured. Please set the GEMINI_API_KEY environment variable manually.", fg="red"
+                        "API key not configured. Please set the GOOGLE_API_KEY environment variable manually.", fg="red"
                     )
                 )
         else:
-            os.environ["GEMINI_API_KEY"] = api_key
+            os.environ["GOOGLE_API_KEY"] = api_key
             click.echo(
                 click.style("\nAPI key has been set successfully.", fg="green")
             )
