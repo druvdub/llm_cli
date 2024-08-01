@@ -26,7 +26,7 @@ def _version():
 
 
 @cli.command("configure")
-@click.option("--api-key", "-k", help="Quicker way to setup API for the Gemini API.", default=None)
+@click.option("--api-key", "-k", help="Quicker way to setup API for the Gemini API.")
 def configure(api_key):
     """Configure the API key for the Gemini API."""
     click.echo("Configuring API key...")
@@ -83,9 +83,9 @@ def configure(api_key):
 
 
 @cli.command("prompt")
-@click.option("--text", "-t", help="Text prompt to interact with Gemini", required=False)
-@click.option("--image", "-i", help="Image path to upload to Gemini. Can upload multiple images", required=False)
-@click.option("--file", "-f", help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API", required=False)
+@click.option("--text", "-t", help="Text prompt to interact with Gemini")
+@click.option("--image", "-i", multiple=True, help="Image path to upload to Gemini. Can upload multiple images")
+@click.option("--file", "-f", multiple=True, help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API")
 @click.pass_context
 def prompt(ctx, text, image, file):
     """Generate content from a prompt and/or other files."""
@@ -95,3 +95,11 @@ def prompt(ctx, text, image, file):
                 "Please provide atleast one of the following options: --text, --image, --file.", fg="bright_red", )
         )
         click.echo(ctx.get_help())
+
+    try:
+        gemini = Gemini()
+
+    except ValueError as e:
+        click.echo(
+            click.style(f"An error occurred: {str(e)}", fg="red")
+        )
