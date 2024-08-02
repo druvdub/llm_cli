@@ -55,6 +55,11 @@ git clone https://github.com/druvdub/llm_cli
 cd llm_cli
 
 pip install -r requirements.txt
+```
+
+and installing the package in editable mode.
+
+```bash
 
 pip install -e .
 
