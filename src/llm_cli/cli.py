@@ -1,23 +1,23 @@
 import click
 import os
 
-from gemini_cli import __version__
-from gemini_cli.api.gemini import Gemini
-from gemini_cli.utils.helpers import version_, load_env, verify_env, write_dotenv
-from gemini_cli.utils.processor import process_gemini_response
+from llm_cli import __version__
+from llm_cli.api.gemini import Gemini
+from llm_cli.utils.helpers import version_, load_env, verify_env, write_dotenv
+from llm_cli.utils.processor import process_gemini_response
 
 
 load_env()
 
 
 @click.group(invoke_without_command=True)
-@click.option("--version", "-v", is_flag=True, help="Get the version of the gemini-cli package.")
+@click.option("--version", "-v", is_flag=True, help="Get the version of the llm-cli package.")
 @click.pass_context
 def cli(ctx, version):
     """A CLI tool for interacting with the Gemini API.
-    can be invoked with 'gcli' or 'gemini-cli'.
+    can be invoked with 'lcli' or 'llm-cli'.
 
-    Examples: $ gcli --version
+    Examples: $ lcli --version
     """
     if version:
         click.echo(version_())
@@ -55,7 +55,7 @@ def configure(api_key):
                 )
 
                 click.echo(
-                    "\nInstallation complete. You can now use the gemini-cli commands."
+                    "\nInstallation complete. You can now use the llm-cli commands."
                 )
 
             else:
@@ -72,12 +72,12 @@ def configure(api_key):
             )
 
             click.echo(
-                "\nInstallation complete. You can now use the gemini-cli commands. Please ensure that the API key is correct."
+                "\nInstallation complete. You can now use the llm-cli commands. Please ensure that the API key is correct."
             )
 
         click.echo(
             click.style(
-                "Get started by running 'gcli --help' to see the available commands.\n",
+                "Get started by running 'lcli --help' to see the available commands.\n",
                 bold=True
             )
         )

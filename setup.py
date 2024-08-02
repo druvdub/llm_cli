@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 def get_version() -> str:
-    rel_path = "src/gemini_cli/__init__.py"
+    rel_path = "src/llm_cli/__init__.py"
     with open(rel_path, "r") as file:
         for line in file.read().splitlines():
             if line.startswith("__version__"):
@@ -12,7 +12,7 @@ def get_version() -> str:
 
 
 setup(
-    name='gemini-cli',
+    name='llm-cli',
     description='A CLI tool for interacting with the Gemini API',
     version=get_version(),
     package_dir={"": "src"},
@@ -24,8 +24,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'gcli=gemini_cli.cli:cli',
-            'gemini-cli=gemini_cli.cli:cli'
+            'lcli=llm_cli.cli:cli',
+            'llm-cli=llm_cli.cli:cli'
         ]
     },
     author='ddos',

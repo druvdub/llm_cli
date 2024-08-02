@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import os
-from gemini_cli import __version__
+from llm_cli import __version__
 from .constants import SUPPORTED_IMAGE_MIME_TYPES, SUPPORTED_VIDEO_MIME_TYPES, SUPPORTED_AUDIO_MIME_TYPES
 
 
@@ -21,12 +21,12 @@ def verify_env(env_vars: list[str]):
     for var in env_vars:
         if var not in os.environ:
             raise ValueError(
-                f"Environment variable {var} not found. Please set it using `gcli configure`.")
+                f"Environment variable {var} not found. Please set it using `lcli configure`.")
 
 
 def version_() -> str:
-    """Get the version of the gemini-cli package."""
-    return f"gemini-cli v{__version__}"
+    """Get the version of the llm-cli package."""
+    return f"llm-cli v{__version__}"
 
 
 def validate_image_type(image_path: str) -> bool:
