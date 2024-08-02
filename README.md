@@ -2,11 +2,13 @@
 
 A command line interface to interact with multiple LLM instances.
 
-Currently, the CLI supports the following LLMS:
+Currently, the CLI supports the following LLMs:
 
 - (Gemini)[https://gemini.google.com/app]
 
 ## Installation
+
+To install the CLI, you do need to have Python `>=3.9` installed on your machine.
 
 ```bash
 
@@ -15,6 +17,8 @@ pip install llm-cli
 ```
 
 ## Usage
+
+To get started, you can run the following command:
 
 ```bash
 
@@ -42,11 +46,15 @@ Commands:
 
 ## Development
 
+For developing the application in a virtual environment, you can install the necessary dependencies by installing them using the requirements file.
+
 ```bash
 
-git clone (https://github.com/druvdub/llm_cli)[https://github.com/druvdub/llm_cli]
+git clone https://github.com/druvdub/llm_cli
 
 cd llm_cli
+
+pip install -r requirements.txt
 
 pip install -e .
 
@@ -54,8 +62,4 @@ pip install -e .
 
 ## License
 
-Apache 2.0
-
-```
-
-```
+Apache 2.0 License - see the LICENSE file for details.
