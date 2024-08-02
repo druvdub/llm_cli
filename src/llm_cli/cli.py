@@ -2,6 +2,7 @@ import click
 
 from llm_cli import __version__
 from llm_cli.api.gemini import Gemini
+from llm_cli.utils.constants import COMMAND_COMPLETION_INSTRUCTIONS
 from llm_cli.utils.helpers import peek, version_, load_env, verify_env, write_dotenv, format_file_info
 from llm_cli.utils.processor import process_gemini_response
 
@@ -104,7 +105,7 @@ def verify():
 @cli.command("prompt")
 @click.option("--text", "-t", help="Text prompt to interact with Gemini")
 @click.option("--image", "-i", multiple=True, help="Image path to upload to Gemini. Can upload multiple images")
-@click.option("--file", "-f", multiple=True, help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API")
+@click.option("--file", "-f", multiple=True, help="File path to upload to Gemini. Can upload multiple files. Images, Videos, Audio, Documents. Files are stored upto 48 hours before being deleted automatically. Uses files API", type=click.Path(exists=True))
 @click.option("--stream", "-s", is_flag=True, default=False, help="Get the response in chunks.")
 @click.pass_context
 def prompt(ctx, text, image, file, stream):
@@ -176,7 +177,7 @@ def chat(start):
 
 @cli.command("files")
 @click.option("--list", "-l", is_flag=True, help="List all files uploaded to Gemini.")
-@click.option("--upload", "-u", help="Upload a file to Gemini by providing the file path and a display name in that order", nargs=2, type=(str, str))
+@click.option("--upload", "-u", help="Upload a file to Gemini by providing the file path and a display name in that order", nargs=2, type=(click.Path(exists=True), str))
 @click.option("--delete", "-d", help="Delete a file from Gemini by providing the file name.")
 @click.option("--fetch", "-f", help="Fetch a file from Gemini by providing the file display name.")
 def files(list, upload, delete, fetch):
@@ -257,6 +258,32 @@ def files(list, upload, delete, fetch):
         )
 
     except Exception as e:
+        click.echo(
+            click.style(f"An error occurred: {str(e)}", fg="red")
+        )
+
+
+@cli.command("completion")
+@click.option("--command", "-c", help="Input command to complete.", required=True)
+@click.option("--context", "-ctx", help="Context for the command.", required=True)
+def completion(command, context):
+    """Complete a command based on the context provided."""
+    try:
+        gemini = Gemini(system_instruction=COMMAND_COMPLETION_INSTRUCTIONS)
+
+        response = gemini.generate_content_from_text_prompt(
+            f"`{command}` {{{context}}}"
+        )
+
+        text = process_gemini_response(response)
+
+        click.echo(
+            click.style(
+                f"\n{text}", fg="bright_blue"
+            )
+        )
+
+    except ValueError as e:
         click.echo(
             click.style(f"An error occurred: {str(e)}", fg="red")
         )

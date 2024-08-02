@@ -14,6 +14,7 @@ class Gemini:
     api_key: str = field(init=False)
     chat_history: list = field(default_factory=list)
     chat: ChatSession = field(init=False)
+    system_instruction: str = field(default="")
 
     def __post_init__(self):
         # validate if environment variable is set or exists or is not empty
@@ -25,7 +26,12 @@ class Gemini:
                 "API key not found. Please set the GOOGLE_API_KEY environment variable or properly configure it using `lcli configure`.")
 
         genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+
+        if self.system_instruction:
+            self.model = genai.GenerativeModel(
+                'gemini-1.5-flash', system_instruction=self.system_instruction)
+        else:
+            self.model = genai.GenerativeModel('gemini-1.5-flash')
 
         self.chat = self.model.start_chat(history=self.chat_history)
 
