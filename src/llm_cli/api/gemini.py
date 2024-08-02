@@ -2,6 +2,7 @@ import os
 from typing import Any, Iterable
 import google.generativeai as genai
 from google.generativeai.types import GenerateContentResponse, File
+from google.generativeai import ChatSession
 from dataclasses import dataclass, field
 
 from llm_cli.utils.helpers import preprocess_input
@@ -11,6 +12,8 @@ from llm_cli.utils.helpers import preprocess_input
 class Gemini:
     """A class to interact with the Gemini API."""
     api_key: str = field(init=False)
+    chat_history: list = field(default_factory=list)
+    chat: ChatSession = field(init=False)
 
     def __post_init__(self):
         # validate if environment variable is set or exists or is not empty
@@ -23,6 +26,8 @@ class Gemini:
 
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel('gemini-1.5-flash')
+
+        self.chat = self.model.start_chat(history=self.chat_history)
 
     def generate_content_from_text_prompt(self, prompt: str, stream_response: bool = False) -> GenerateContentResponse:
         """Generate content from a text prompt."""
@@ -76,6 +81,7 @@ class Gemini:
 
     def upload_files(self, files: list[str]) -> Iterable[File]:
         """Upload files to the API."""
+
         for file in files:
             yield self.upload_file(file)
 
@@ -92,3 +98,15 @@ class Gemini:
         file_display_name = preprocess_input(file_display_name)
 
         return genai.get_file(file_display_name)
+
+    def initialize_new_chat(self):
+        """Initialize a new chat session."""
+
+        self.chat_history = []
+        self.chat = self.model.start_chat(history=self.chat_history)
+
+    def send_chat_message(self, message: str) -> GenerateContentResponse:
+        """Send a message to the chat session."""
+
+        message = preprocess_input(message)
+        return self.chat.send_message(message)

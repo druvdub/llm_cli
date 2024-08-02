@@ -136,6 +136,44 @@ def prompt(ctx, text, image, file, stream):
             )
 
 
+@cli.command("chat")
+@click.option("--start", "-s", is_flag=True, help="Start a chat session with Gemini.")
+def chat(start):
+    """Start a chat session with Gemini."""
+    try:
+        gemini = Gemini()
+        if start:
+            click.echo(
+                click.style(
+                    "Starting chat session with Gemini...", fg="bright_blue"
+                )
+            )
+
+            while True:
+                message = click.prompt(
+                    click.style("You"), prompt_suffix=": ")
+
+                response = gemini.send_chat_message(message)
+
+                result = process_gemini_response(response)
+
+                click.echo(
+                    click.style(
+                        f"Gemini: {result}", fg="bright_blue"
+                    )
+                )
+
+    except click.Abort:
+        click.echo(
+            click.style("\nChat session ended.", fg="bright_yellow")
+        )
+
+    except Exception as e:
+        click.echo(
+            click.style(f"An error occurred: {str(e)}", fg="red")
+        )
+
+
 @cli.command("files")
 @click.option("--list", "-l", is_flag=True, help="List all files uploaded to Gemini.")
 @click.option("--upload", "-u", help="Upload a file to Gemini by providing the file path and a display name in that order", nargs=2, type=(str, str))
