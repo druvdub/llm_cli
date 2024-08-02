@@ -4,7 +4,7 @@ A command line interface to interact with multiple LLM instances.
 
 Currently, the CLI supports the following LLMs:
 
-- (Gemini)[https://gemini.google.com/app]
+- [Gemini AI](https://gemini.google.com/app)
 
 ## Installation
 
