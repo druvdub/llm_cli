@@ -4,6 +4,8 @@ import google.generativeai as genai
 from google.generativeai.types import GenerateContentResponse, File
 from dataclasses import dataclass, field
 
+from llm_cli.utils.helpers import preprocess_input
+
 
 @dataclass
 class Gemini:
@@ -24,6 +26,9 @@ class Gemini:
 
     def generate_content_from_text_prompt(self, prompt: str, stream_response: bool = False) -> GenerateContentResponse:
         """Generate content from a text prompt."""
+
+        prompt = preprocess_input(prompt)
+
         return self.model.generate_content(prompt, stream=stream_response)
 
     def generate_content_from_text_image_prompt(self, prompt: str, image_args: list[dict], stream_response: bool = False) -> GenerateContentResponse:
@@ -37,6 +42,9 @@ class Gemini:
             - image/heif
             - image/heic
         """
+
+        prompt = preprocess_input(prompt)
+
         return self.model.generate_content([prompt, *image_args], stream=stream_response)
 
     def generate_content_from_text_and_file_prompt(self, prompt: str, file_args: Iterable[Any], stream_response: bool = False) -> GenerateContentResponse:
@@ -49,9 +57,12 @@ class Gemini:
             - Videos
             - Audio
         """
+
+        prompt = preprocess_input(prompt)
+
         return self.model.generate_content([prompt, *file_args], stream=stream_response)
 
-    def fetch_files(self) -> Iterable[File]:
+    def list_files(self) -> Iterable[File]:
         """Get a list of uploaded files."""
         return genai.list_files()
 
@@ -68,6 +79,16 @@ class Gemini:
         for file in files:
             yield self.upload_file(file)
 
-    def upload_file(self, file: str) -> File:
+    def upload_file(self, file: str, **kwargs) -> File:
         """Upload a file to the API."""
-        return genai.upload_file(file)
+
+        file = preprocess_input(file)
+
+        return genai.upload_file(file, **kwargs)
+
+    def get_file(self, file_display_name: str) -> File:
+        """Get a file by its display name."""
+
+        file_display_name = preprocess_input(file_display_name)
+
+        return genai.get_file(file_display_name)

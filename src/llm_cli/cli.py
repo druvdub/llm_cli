@@ -1,9 +1,8 @@
 import click
-import os
 
 from llm_cli import __version__
 from llm_cli.api.gemini import Gemini
-from llm_cli.utils.helpers import version_, load_env, verify_env, write_dotenv
+from llm_cli.utils.helpers import peek, version_, load_env, verify_env, write_dotenv, format_file_info
 from llm_cli.utils.processor import process_gemini_response
 
 
@@ -135,3 +134,91 @@ def prompt(ctx, text, image, file, stream):
             click.echo(
                 click.style(f"An error occurred: {str(e)}", fg="red")
             )
+
+
+@cli.command("files")
+@click.option("--list", "-l", is_flag=True, help="List all files uploaded to Gemini.")
+@click.option("--upload", "-u", help="Upload a file to Gemini by providing the file path and a display name in that order", nargs=2, type=(str, str))
+@click.option("--delete", "-d", help="Delete a file from Gemini by providing the file name.")
+@click.option("--fetch", "-f", help="Fetch a file from Gemini by providing the file display name.")
+def files(list, upload, delete, fetch):
+    """Basic file management commands for Gemini."""
+    try:
+        gemini = Gemini()
+
+        if list:
+            response = gemini.list_files()
+
+            file = peek(response)
+
+            if file:
+                click.echo(
+                    f"Display Name\t - \tMime Type\t - \tByte Size\t - \tURI"
+                )
+
+                for f in file[1]:
+                    click.echo(
+                        click.style(
+                            f"\n{format_file_info(f)}", fg="magenta"
+                        )
+                    )
+            else:
+                click.echo(
+                    click.style(
+                        "No files found.", fg="bright_yellow"
+                    )
+                )
+
+        if upload:
+            response = gemini.upload_file(upload[0], display_name=upload[1])
+
+            click.echo(
+                click.style(
+                    f"Uploaded file: {response.display_name} with {response.uri}", fg="bright_blue"
+                )
+            )
+
+        if delete:
+            # confirm deletion
+            if click.confirm(f"Are you sure you want to delete file with display name" + click.style(f" {delete}", fg="green", blink=True) + "?", default=True, prompt_suffix=": "):
+                try:
+                    file = gemini.get_file(delete)
+                except ValueError as e:
+                    click.echo(
+                        click.style(f"An error occurred: {str(e)}", fg="red")
+                    )
+                    return
+
+                gemini.delete_file(file.display_name)
+
+                click.echo(
+                    click.style(
+                        f"Deleted file: {file.name} with display name: {file.display_name}", fg="bright_blue"
+                    )
+                )
+
+        if fetch:
+            try:
+
+                file = gemini.get_file(fetch)
+
+                click.echo(
+                    click.style(
+                        f"{file}", fg="magenta"
+                    )
+                )
+            except:
+                click.echo(
+                    click.style(
+                        f"File not found or you may not have permissions to access it", fg="bright_yellow"
+                    )
+                )
+    except click.ClickException as e:
+        click.echo(
+            click.style(f"Interrupted by user: {str(e)}", fg="red")
+        )
+
+    except Exception as e:
+        click.echo(
+            click.style(f"An error occurred: {str(e)}", fg="red")
+        )
